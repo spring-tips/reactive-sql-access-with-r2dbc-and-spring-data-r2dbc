@@ -13,34 +13,34 @@ import reactor.test.StepVerifier;
 	*/
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class CustomerRepositoryTest {
+public class ReservationRepositoryTest {
 
 	@Autowired
-	private CustomerRepository customerRepository;
+	private ReservationRepository reservationRepository;
 
 	@Test
 	public void all() throws Exception {
 
-		Flux<Void> deleteAll = this.customerRepository
+		Flux<Void> deleteAll = this.reservationRepository
 			.findAll()
-			.flatMap(customer -> this.customerRepository.deleteById(customer.getId()));
+			.flatMap(reservation -> this.reservationRepository.deleteById(reservation.getId()));
 
 		StepVerifier
 			.create(deleteAll)
 			.expectNextCount(0)
 			.verifyComplete();
 
-		Flux<Customer> insertRecords = Flux
+		Flux<Reservation> insertRecords = Flux
 			.just("first@email.com", "second@email.com", "third@email.com")
-			.map(email -> new Customer(null, email))
-			.flatMap(customer -> this.customerRepository.save(customer));
+			.map(email -> new Reservation(null, email))
+			.flatMap(reservation -> this.reservationRepository.save(reservation));
 
 		StepVerifier
 			.create(insertRecords)
 			.expectNextCount(3)
 			.verifyComplete();
 
-		Flux<Customer> all = this.customerRepository.findAll();
+		Flux<Reservation> all = this.reservationRepository.findAll();
 		StepVerifier
 			.create(all)
 			.expectNextCount(3)
